@@ -1,8 +1,5 @@
-from pydantic import BaseModel, Field, ConfigDict
-
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Literal, Optional, List
-
-from src.schemas.achievements import AchievementBase
 
 CatColor = Literal["Gray", "Black", "White", "Ginger", "Mixed"]
 
@@ -27,7 +24,17 @@ class CatUpdate(BaseModel):
 
 class CatResponse(CatBase):
     model_config = ConfigDict(from_attributes=True)
+    
     id: int
     owner_id: int
     achievements: List[str] = Field(default_factory=list)
     age: int
+
+    @field_validator("color", mode="before")
+    @classmethod
+    def normalize_color(cls, value):
+        if isinstance(value, str):
+            normalized = value.capitalize() if value.lower() != "ginger" else "Ginger"
+            if normalized in ["Gray", "Black", "White", "Ginger", "Mixed"]:
+                return normalized
+        return value

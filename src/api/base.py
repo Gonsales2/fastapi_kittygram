@@ -2,6 +2,7 @@ from fastapi import APIRouter, status, HTTPException
 
 from src.schemas.posts import PostRequestSchema, PostResponseSchema
 
+
 router = APIRouter()
 
 

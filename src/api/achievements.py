@@ -1,8 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
-
+from fastapi import APIRouter, HTTPException, status, Depends
+from sqlalchemy.orm import Session
 from typing import List
-
+from src.database import get_db
+from src.repositories.achievements import AchievementRepository
 from src.schemas.achievements import AchievementCreate, AchievementResponse
+
 
 router = APIRouter()
 
@@ -23,17 +25,17 @@ async def get_achievement(aid: int):
 
 
 @router.post("/", response_model=AchievementResponse, status_code=201)
-async def create_achievement(achievement_AchievementCreate):
-    global _next_id
-
-    for ach in achievements_db.values():
-        if ach.name == achievement_data.name:
-            raise HTTPException(400, "Уже существует")
-
-    new_ach = AchievementResponse(id=_next_id, name=achievement_data.name)
-    achievements_db[_next_id] = new_ach
-    _next_id += 1
-    return new_ach
+async def create_achievement(
+    achievement_AchievementCreate, 
+    db: Session = Depends(get_db)
+):
+    repo = AchievementRepository(db)
+    
+    if repo.name_exists(achievement_data.name):
+        raise HTTPException(400, detail="Достижение уже существует")
+    
+    new_ach = repo.create({"name": achievement_data.name})
+    return AchievementResponse.model_validate(new_ach)
 
 
 @router.delete("/{aid}", status_code=204)
