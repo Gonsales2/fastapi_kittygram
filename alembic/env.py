@@ -4,7 +4,6 @@ from alembic import context
 import sys
 from pathlib import Path
 
-# Добавляем src в путь для импортов
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from src.database import Base  # noqa: E402
@@ -40,7 +39,7 @@ def run_migrations_online() -> None:
         context.configure(
             connection=connection, 
             target_metadata=target_metadata,
-            render_as_batch=True  # Важно для SQLite!
+            render_as_batch=True
         )
         with context.begin_transaction():
             context.run_migrations()

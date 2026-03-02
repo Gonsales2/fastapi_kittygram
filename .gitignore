@@ -62,3 +62,5 @@ docs/_build/
 *.pdf
 *.html
 docker-compose.override.yml
+.env.local
+*.env

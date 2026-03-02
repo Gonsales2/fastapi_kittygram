@@ -1,9 +1,8 @@
-# src/models/achievement.py  (или achievements.py — но везде одинаково!)
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from src.database import Base
 from src.models.base import TimestampMixin
-from src.models.associations import cat_achievements  # 👈 Импортируем ту же таблицу
+from src.models.associations import cat_achievements 
 
 
 class Achievement(Base, TimestampMixin):
